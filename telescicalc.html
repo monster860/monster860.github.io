@@ -1,0 +1,657 @@
+<html>
+<head>
+<style>
+body 
+{
+	font-family: Arial;
+	padding: 0;
+	margin: 0;
+	background-color: #272727;
+	font-size: 12px;
+	color: #ffffff;
+	line-height: 170%;
+}
+
+hr
+{
+	background-color: #40628a;
+	height: 1px;
+}
+
+input
+{
+	width: 60px;
+}
+
+a, a:link, a:visited, a:active, .linkOn, .linkOff
+{ 
+	color: #ffffff; 
+	text-decoration: none;
+	background: #40628a;
+	border: 1px solid #161616;
+	padding: 1px 4px 1px 4px;
+	margin: 0 2px 0 0;
+	cursor:default;
+}
+
+a.nobg, a.nobg:link, a.nobg:visited, a.nobg:active
+{ 
+	color: #ffffff; 
+	text-decoration: none;
+	background: transparent;
+	border: none;
+	padding: 0px;
+	margin: 0px;
+	cursor:default;
+	font-weight:bold;
+}
+a.nobg:hover 
+{ 
+	color:#40628a;
+}
+
+a:hover 
+{ 
+	color: #40628a;
+	background: #ffffff;
+}
+
+a.white, a.white:link, a.white:visited, a.white:active
+{ 
+	color: #40628a; 
+	text-decoration: none;
+	background: #ffffff;
+	border: 1px solid #161616;
+	padding: 1px 4px 1px 4px;
+	margin: 0 2px 0 0;
+	cursor:default;
+}
+
+a.white:hover 
+{ 
+	color: #ffffff;
+	background: #40628a;
+}
+
+.linkOn, a.linkOn:link, a.linkOn:visited, a.linkOn:active, a.linkOn:hover
+{ 
+	color: #ffffff; 
+	background: #2f943c;
+	border-color: #24722e;
+}
+
+.linkOff, a.linkOff:link, a.linkOff:visited, a.linkOff:active, a.linkOff:hover
+{ 
+	color: #ffffff; 
+	background: #999999;
+	border-color: #666666;
+}
+
+a.icon, .linkOn.icon, .linkOff.icon
+{
+	position: relative;
+	padding: 1px 4px 2px 20px;
+}
+
+a.icon img, .linkOn.icon img
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 18px;
+	height: 18px;
+}
+
+ul
+{
+	padding: 4px 0 0 10px;
+	margin: 0;
+	list-style-type: none;
+}
+
+li
+{
+	padding: 0 0 2px 0;
+}
+
+img, a img 
+{ 
+	border-style:none; 
+}
+
+h1, h2, h3, h4, h5, h6
+{
+	margin: 0;
+	padding: 16px 0 8px 0; 
+	color: #517087;
+}
+
+h1
+{
+	font-size: 15px;
+}
+
+h2
+{
+	font-size: 14px;
+}
+
+h3
+{
+	font-size: 13px;
+}
+
+h4
+{
+	font-size: 12px;
+}
+
+.uiWrapper
+{
+
+	width: 100%;
+	height: 100%;
+	padding-top:32px;
+}
+
+.uiTitle
+{
+	clear: both;
+	padding: 6px 8px 6px 8px;
+	border-bottom: 2px solid #161616;
+	background: #383838;
+	color: #98B0C3;
+	font-size: 16px;
+}
+
+.uiTitleWrapper
+ {
+ 	position:fixed;
+ 	top:0px;
+ 	left:0px;
+ 	right:0px;
+ 	z-index: 10
+ }
+ 
+ .uiTitleButtons
+ {
+ 	position:fixed;
+ 	top:0px;
+ 	right:0px;
+ 	height:32px;
+ 	z-index:11;
+ }
+
+
+.uiTitle.icon
+{
+	padding: 6px 8px 6px 42px;
+	background-position: 2px 50%;
+	background-repeat: no-repeat;
+}
+
+.uiContent
+{	
+	clear: both;
+	padding: 8px;
+	font-family: Verdana, Geneva, sans-serif;
+}
+
+.good
+{
+	color: #00ff00;
+}
+
+.average
+{
+	color: #d09000;
+}
+
+.bad
+{
+	color: #ff0000;
+}
+
+.highlight
+{
+	color: #8BA5C4;
+}
+
+.dark
+{
+	color: #272727;
+}
+
+.notice
+{
+	position: relative;
+	background: #E9C183;
+	color: #15345A;
+	font-size: 10px;
+	font-style: italic;
+	padding: 2px 4px 0 4px;
+	margin: 4px;
+}
+
+.notice.icon
+{	
+	padding: 2px 4px 0 20px;
+}
+
+.notice img
+{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 16px;
+	height: 16px;
+}
+
+div.notice
+{
+	clear: both;
+}
+
+.statusDisplay
+{
+	background: #000000;
+	color: #ffffff;
+	border: 1px solid #40628a;
+	padding: 4px;
+	margin: 3px 0;
+}
+
+.statusLabel
+{
+	width: 138px;
+	float: left;
+	overflow: hidden;
+	color: #98B0C3;
+}
+
+.statusValue
+{
+	float: left;
+}
+
+.block
+{
+	padding: 8px;
+	margin: 10px 4px 4px 4px;
+	border: 1px solid #40628a;
+	background-color: #202020;
+}
+
+.block h3
+{
+	padding: 0;
+}
+
+.progressBar
+{
+	width: 240px;
+	height: 14px;
+	border: 1px solid #666666;
+	float: left;
+	margin: 0 5px;
+	overflow: hidden;
+}
+
+.progressFill
+{
+	width: 100%;
+	height: 100%;
+	background: #40628a;
+	overflow: hidden;
+}
+
+.progressFill.good
+{
+	color: #ffffff;
+	background: #00ff00;
+}
+
+.progressFill.average
+{
+	color: #ffffff;
+	background: #d09000;
+}
+
+.progressFill.bad
+{
+	color: #ffffff;
+	background: #ff0000;
+}
+
+.progressFill.highlight
+{
+	color: #ffffff;
+	background: #8BA5C4;
+}
+
+.clearBoth
+{
+	clear: both;
+}
+
+.clearLeft
+{
+	clear: left;
+}
+
+.clearRight
+{
+	clear: right;
+}
+
+.line
+{
+	width: 100%;
+	clear: both;
+}
+</style>
+<script>
+POW_MIN_OFF = -4;
+POW_MAX_OFF = 0;
+HA_MIN_OFF = -10;
+HA_MAX_OFF = 10;
+VA_MIN_OFF = 0;
+VA_MAX_OFF = 0;
+offsets = [];
+bookmarks = [];
+showBookmarks = 0;
+
+padX = 166;
+padY = 108;
+
+calPower = 5;
+calHorAngle = 0.0;
+calVerAngle = 45.0;
+calDestX = 0.0;
+calDestY = 0.0;
+
+//Math
+function mod(a,b) {
+	return a-b*Math.floor(a/b);
+}
+function toScientificDegree(angle)
+{
+    return mod(360.0 - angle + 90.0, 360.0);
+}
+function fromScientificDegree(angle)
+{
+    return mod(360.0 - angle + 90.0, 360.0);
+}
+function toRadian(angle)
+{
+    return angle * (Math.PI / 180.0);
+}
+function fromRadian(angle)
+{
+    return angle * (180.0 / Math.PI);
+}
+//End math
+
+function init()
+{
+	load();
+	reset();
+}
+function padPosUpdate()
+{
+	padX = parseInt($('#padX').val());
+	padY = parseInt($('#padY').val());
+	reset();
+	save();
+}
+function update()
+{
+	if (offsets.length == 1) compute();
+	doDisplay();
+}
+function compute()
+{
+	console.log('Computing');
+	var offset = offsets[0];
+	var destX = parseInt($('#destX').val());
+	var destY = parseInt($('#destY').val());
+	
+	var deltaX = destX - padX * 1.0;
+	var deltaY = destY - padY * 1.0;
+	
+	var dist = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY)) * 1.0;
+	
+	var actPower = calPower + offset.pow * 1.0;
+	
+	var maxRange = actPower * actPower / 10.0 * 1.0;	
+	if (dist > maxRange)
+	{
+		$('#verdict').text('Out of range!');
+		$('#verdict').addClass('average');
+		$('#verdict').removeClass('good');
+		$('#verdict').removeClass('bad');
+		return;
+	}
+	var desHAngle = mod(Math.atan2(deltaY,deltaX), Math.PI * 2.0) * 1.0;
+	var desBearing = fromScientificDegree(fromRadian(desHAngle)) * 1.0;
+	var actBearing = Math.round(desBearing * 100.0) / 100.0;
+	actBearing -= offset.ha * 1.0;
+	var desVAngle = .5 * Math.asin(10.0 * dist / (actPower * actPower)) * 1.0;
+	var actElevation = Math.round(fromRadian(desVAngle) * 10.0) / 10.0;
+	actElevation -= offset.va * 1.0;
+	if (isNaN(actBearing) || isNaN(actElevation)) {
+		$('#verdict').text('Error');
+		$('#verdict').addClass('bad');
+		$('#verdict').removeClass('good');
+		$('#verdict').removeClass('average');
+		return;
+	}
+	$('#verdict').text('Bearing: ' + actBearing + ', Elevation: ' + actElevation);
+	$('#verdict').addClass('good');
+	$('#verdict').removeClass('bad');
+	$('#verdict').removeClass('average');
+}
+function doDisplay()
+{
+	if (offsets.length == 1)
+	{
+		$('#Calibration').css('display','none');
+		$('#Use').css('display','block');
+		$('#accuracy').removeClass('average');
+		$('#accuracy').removeClass('bad');
+		$('#accuracy').addClass('good');
+		$('#accuracy').text('Accurate!');
+	} 
+	else
+	{
+		$('#Calibration').css('display','block');
+		$('#Use').css('display','none');
+		if (offsets.length == 0) {
+			$('#accuracy').removeClass('average');
+			$('#accuracy').removeClass('good');
+			$('#accuracy').addClass('bad');
+			$('#accuracy').text('Impossible, Reset');
+		} else {
+			$('#accuracy').removeClass('bad');
+			$('#accuracy').removeClass('good');
+			$('#accuracy').addClass('average');
+			$('#accuracy').text('Not Yet Accurate');
+		}
+	}
+	$('#possibleOffsets').text('' + offsets.length);
+	if (showBookmarks)
+	{
+		$('#calcVis').css('display','none');
+		$('#bookmarksVis').css('display','block');
+		bookmarksHTML = '';
+		for (var i = 0; i < bookmarks.length; i++)
+		{
+			bookmarksHTML += '<a href="#" onclick="setXY(' + bookmarks[i].X + ',' + bookmarks[i].Y + ')">' + bookmarks[i].name + '</a>';
+			bookmarksHTML += '<a href="#" onclick="delBookmark(' + i + ')">X</a><br>';
+		}
+		$('#bookmarks').html(bookmarksHTML);
+	}
+	else
+	{
+		$('#calcVis').css('display','block');
+		$('#bookmarksVis').css('display','none');
+	}
+}
+function reset()
+{
+	console.log("Resetting");
+	offsets = [];
+	for (var ha = HA_MIN_OFF; ha <= HA_MAX_OFF; ha++)
+		for (var va = VA_MIN_OFF; va <= VA_MAX_OFF; va++)
+			for (var pow = POW_MIN_OFF; pow <= POW_MAX_OFF; pow++)
+				offsets.push({'ha':ha,'va':va,'pow':pow});
+	update();
+}
+function power(pow)
+{
+	$('#'+calPower+'a').removeClass('linkOn');
+	$('#'+calPower+'b').removeClass('linkOn');
+	calPower = pow;
+	$('#'+pow+'a').addClass('linkOn');
+	$('#'+pow+'b').addClass('linkOn');
+	update();
+}
+function checkDest(offset) {
+	var actHDegree = mod(calHorAngle + offset.ha,360);
+	var actHAngle = toRadian(toScientificDegree(actHDegree));
+	var actVDegree = calVerAngle + offset.va;
+	if (actVDegree < 1) actVDegree = 1;
+	if (actVDegree > 90) actVDegree = 90;
+	var actVAngle = toRadian(actVDegree);
+	var actVelocity = calPower + offset.pow;
+	var range = actVelocity * actVelocity * Math.sin(2.0 * actVAngle) / 10.0;
+	var deltaX = range * Math.cos(actHAngle);
+    var deltaY = range * Math.sin(actHAngle);
+    var destX = Math.round(padX + deltaX, 0);
+    var destY = Math.round(padY + deltaY, 0);
+	return (calDestX == destX) && (calDestY == destY);
+}
+function addCase()
+{
+	calHorAngle = parseFloat($('#calHorAngle').val());
+	calVerAngle = parseFloat($('#calVerAngle').val());
+	calDestX = parseInt($('#calDestX').val());
+	calDestY = parseInt($('#calDestY').val());
+	for (var i = offsets.length-1; i >= 0; i--) {
+		if (!checkDest(offsets[i])) {
+			offsets.splice(i,1);
+		}
+	}
+	update();
+}
+function newBookmarkScreen()
+{
+	toggleBookmarks();
+	$('#newBookmark').css('display','inline');
+	$('#newBookmarkName').val('Enter new bookmark name');
+}
+function toggleBookmarks()
+{
+	showBookmarks = !showBookmarks;
+	$('#newBookmark').css('display','none');
+	doDisplay();
+}
+function newBookmark()
+{
+	var X = parseInt($('#destX').val());
+	var Y = parseInt($('#destY').val());
+	bookmarks.push({'name':$('#newBookmarkName').val() + ' (' + X + ',' + Y + ')','X':X,'Y':Y});
+	bookmarks.sort( function( a, b ) {
+		a = a.name.toLowerCase();
+		b = b.name.toLowerCase();
+		return a < b ? -1 : a > b ? 1 : 0;
+	});
+	$('#newBookmark').css('display','none');
+	save();
+	doDisplay();
+}
+function save()
+{
+	localStorage.setItem('telescicalc',JSON.stringify({'pad':{'X':padX,'Y':padY},'bookmarks':bookmarks}));
+}
+function load()
+{
+	var data = localStorage.getItem('telescicalc');
+	if (data == null) return;
+	var dataObj = JSON.parse(data + '');
+	if (dataObj == null) return;
+	padX = dataObj.pad.X;
+	padY = dataObj.pad.Y;
+	bookmarks = dataObj.bookmarks;
+	$('#padX').val(padX);
+	$('#padY').val(padY);
+}
+function setXY(x,y)
+{
+	destX = x;
+	$('#destX').val(x);
+	destY = y;
+	$('#destY').val(y);
+	toggleBookmarks();
+	update();
+}
+function delBookmark(index)
+{
+	bookmarks.splice(index,1);
+	save();
+	doDisplay();
+}
+</script>
+<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+</head>
+<body onload="init()">
+<p>Based off of &nbsp;<a href="https://tgstation13.org/phpBB/viewtopic.php?f=2&t=1915" class="nobg">this tool</a>.</p>
+<div id="calcVis" style="display:block">
+Pad Location X/Y:<br>
+<input type="number" id="padX" onchange="padPosUpdate()" value="166" /> <input type="number" id="padY" onChange="padPosUpdate()" value="108" />
+<p>Possible Offsets: <span id="possibleOffsets">125</span><br>
+<span class="average" id="accuracy">Not Accurate Yet</span></p>
+<div style="display:block" id="Calibration">
+Bearing: <input type="number" id="calHorAngle" value="0"/><br>
+Elevation: <input type="number" id="calVerAngle" value="45"/><br>
+Power: <a onclick="power(5)" id="5b" class="linkOn" href="#">5</a>
+<a onclick="power(10)" id="10b" class="" href="#">10</a>
+<a onclick="power(20)" id="20b" class="" href="#">20</a>
+<a onclick="power(25)" id="25b" class="" href="#">25</a>
+<a onclick="power(30)" id="30b" class="" href="#">30</a>
+<a onclick="power(40)" id="40b" class="" href="#">40</a>
+<a onclick="power(50)" id="50b" class="" href="#">50</a>
+<a onclick="power(80)" id="80b" class="" href="#">80</a>
+<a onclick="power(100)" id="100b" class="" href="#">100</a><br>
+Result X/Y: <br> <input type="number" id="calDestX" value="0" /> <input type="number" id="calDestY" value="0" /><br>
+<a onclick="addCase()" href="#">Add Case</a> <a onclick="reset()" href="#">Reset calibration</a>
+</div>
+<div style="display:block" id="Use">
+Destionation X/Y:<br>
+<input type="number" id="destX" onchange="update()" value="0" /> <input type="number" id="destY" onChange="update()" value="0" />
+<a onclick="newBookmarkScreen()" href="#">Create Bookmark</a><br>
+Power: <a onclick="power(5)" id="5a" class="linkOn" href="#">5</a>
+<a onclick="power(10)" id="10a" class="" href="#">10</a>
+<a onclick="power(20)" id="20a" class="" href="#">20</a>
+<a onclick="power(25)" id="25a" class="" href="#">25</a>
+<a onclick="power(30)" id="30a" class="" href="#">30</a>
+<a onclick="power(40)" id="40a" class="" href="#">40</a>
+<a onclick="power(50)" id="50a" class="" href="#">50</a>
+<a onclick="power(80)" id="80a" class="" href="#">80</a>
+<a onclick="power(100)" id="100a" class="" href="#">100</a>
+<p><span id="verdict" class="average">Nothing yet</span></p>
+<a href="#" onclick="toggleBookmarks()">Bookmarks</a><br><br>
+<a onclick="reset()" href="#">Recailbrate</a>
+</div>
+</div>
+<div id="bookmarksVis" style="display:block">
+<a href="#" onclick="toggleBookmarks()">Return</a><br><br>
+<span id="bookmarks">
+</span>
+<span id="newBookmark" style="display:none">
+<input type="text" style="width:200px" id="newBookmarkName" value="Name" />
+<a onclick="newBookmark()" href="#">Confirm</a>
+</span>
+</div>
+</body>
+</html>
