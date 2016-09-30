@@ -1,0 +1,323 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script>
+
+// I'm sorry about the poor code quality.
+// Here's an ascii art dolphin dolphin that I copy-pasted from the internet:
+//       
+//                                        _
+//                                   _.-~~.)
+//             _.--~~~~~---....__  .' . .,' 
+//           ,'. . . . . . . . . .~- ._ (
+//          ( .. .g. . . . . . . . . . .~-._
+//       .~__.-~    ~`. . . . . . . . . . . -. 
+//       `----..._      ~-=~~-. . . . . . . . ~-.  
+//                 ~-._   `-._ ~=_~~--. . . . . .~.  
+//                  | .~-.._  ~--._-.    ~-. . . . ~-.
+//                   \ .(   ~~--.._~'       `. . . . .~-.                ,
+//                    `._\         ~~--.._    `. . . . . ~-.    .- .   ,'/
+//       . _ . -~\        _ ..  _          ~~--.`_. . . . . ~-_     ,-','`  .
+//                 ` ._           ~                ~--. . . . .~=.-'. /. `
+//           - . -~            -. _ . - ~ - _   - ~     ~--..__~ _,. /   \  -
+//                   . __ ..                   ~-               ~~_. (  `
+//        _ _               `-       ..  - .    . - ~ ~ .    \    ~-` ` `  `.
+//                                                     - .  `  .   \  \ `. 
+//       
+// If you want the source for this dolphin, go google "ascii art dolphin"
+
+var routergrid = {};
+var paths = [];
+var offset_to_angle = {	'-1,-1':-45,'0,-1':0,'1,-1':45,'-1,0':90,'1,0':90,'-1,1':45,'0,1':0,'1,1':-45};
+var acklist = undefined;
+var acked = [];
+var assembledgrid = {};
+var ackassembledgrid = {};
+var dropchance = .02;
+
+function reset() {
+	for(var x = 0; x < 4; x++)
+		for(var y = 0; y < 4; y++) {
+			assembledgrid['('+x+','+y+')'].css('visibility', 'hidden');
+			ackassembledgrid['('+x+','+y+')'].css('visibility', 'hidden');
+		}
+	acked = [];
+	acklist = undefined;
+	$('#sendlog').html('');
+	$('#recvlog').html('');
+}
+
+function onload() {
+	for(var x = 0; x < 4; x++)
+		for(var y = 0; y < 4; y++) {
+			var elem = $('<div class="recvpiece"></div>');
+			elem.css('background-position-x', (-x*32)+'px');
+			elem.css('background-position-y', (-y*32)+'px');
+			elem.css('left', (x*32)+'px');
+			elem.css('top', (y*32)+'px');
+			elem.css('visibility', 'hidden');
+			$('#recvpic').append(elem);
+			assembledgrid['('+x+','+y+')'] = elem;
+			
+			elem = $('<div class="sendpiece"></div>');
+			elem.css('left', (x*32)+'px');
+			elem.css('top', (y*32)+'px');
+			elem.css('visibility', 'hidden');
+			$('#sendpic').append(elem);
+			ackassembledgrid['('+x+','+y+')'] = elem;
+		}
+	var htmltext = '';
+	for(var x = 0; x < 4; x++)
+		for(var y = 0; y < 4; y++) {
+			routergrid[x+','+y] = {'x': x, 'y': y, xy: x+','+y, 'connections': [], 'adjacent': []};
+			htmltext += '<div class="router" id="router' + x + '_' + y + '" style="left:' + (x*200+100) + ';top:' + (y*200+100) + '"><img src="bus.gif"></div>';
+		}
+	$('#routers').html(htmltext);
+	htmltext = '';
+	for(var x = 0; x < 4; x++)
+		for(var y = 0; y < 4; y++) {
+			var router = routergrid[x+','+y];
+			//pinur(router.adjacent,routergrid[(x-1)+','+(y-1)]);
+			//pinur(router.adjacent,routergrid[(x)+','+(y-1)]);
+			pinur(router.adjacent,routergrid[(x+1)+','+(y-1)]);
+			//pinur(router.adjacent,routergrid[(x-1)+','+(y)]);
+			pinur(router.adjacent,routergrid[(x+1)+','+(y)]);
+			pinur(router.adjacent,routergrid[(x-1)+','+(y+1)]);
+			pinur(router.adjacent,routergrid[(x)+','+(y+1)]);
+			pinur(router.adjacent,routergrid[(x+1)+','+(y+1)]);
+		}
+	for(var i = 0; i < 10; i++) {
+		var path = []
+		var curr = '0,0';
+		var prev = 'a';
+		path.push(curr);
+		while(curr != '3,3') {
+			var adj = routergrid[curr].adjacent;
+			if(adj.indexOf(prev) != -1) {
+				adj = adj.slice()
+				adj.splice(adj.indexOf(prev), 1)
+			}
+			var next = pick(adj);
+			if(routergrid[next].connections.indexOf(curr) == -1) {
+				routergrid[next].connections.push(curr);
+				routergrid[curr].connections.push(next);
+				var currobj = routergrid[curr];
+				var nextobj = routergrid[next];
+				var dx = nextobj.x - currobj.x;
+				var dy = nextobj.y - currobj.y;
+				var transform = 'rotate(' + offset_to_angle[dx+','+dy] + 'deg)';
+				if(dx != 0 && dy != 0)
+					transform += ' scale(1, 1.4142)';
+				htmltext += '<div class="connection" style="left:' + (currobj.x*200+dx*100+100) + ';top:' + (currobj.y*200+dy*100+100) + ';transform:'+transform+'"></div>';
+			}
+			prev = curr;
+			curr = next
+			path.push(curr);
+		}
+		paths.push(path);
+	}
+	for(var x = 0; x < 4; x++)
+		for(var y = 0; y < 4; y++) {
+			var router = routergrid[x+','+y];
+			if(router.connections.length == 0)
+				$('#router' + router.x + '_' + router.y).remove();
+		}
+	$('#connections').html(htmltext);
+}
+function pinur(array, item) {
+	if(item != undefined) {
+		array.push(item.xy);
+	}	
+}
+function pick(array) {
+	return array[Math.floor(Math.random() * array.length)];
+}
+function packet_anim(packetobj, path, callback, index, dir, endpoint) {
+	var newrouter = routergrid[path[index]];
+	packetobj.css('left', newrouter.x*200+100);
+	packetobj.css('top', newrouter.y*200+100);
+	index += dir;
+	if(newrouter.xy != endpoint && Math.random() > dropchance) {
+		setTimeout(function(){packet_anim(packetobj, path, callback, index, dir, endpoint)}, 500);
+	} else {
+		setTimeout(function(){packetobj.remove()}, 500);
+		if(newrouter.xy == endpoint)
+			setTimeout(callback, 500);
+	}
+}
+function send_packet(dir, callback) {
+	var packetobj = $('<div class="packet"></div>');
+	$('#packets').append(packetobj);
+	var path = pick(paths)
+	if(dir >= 0)
+		packet_anim(packetobj, path, callback, 0, 1, '3,3');
+	else
+		packet_anim(packetobj, path, callback, path.length - 1, -1, '0,0');
+	return packetobj;
+}
+function send_image() {
+	if(acked.length >= 16) {
+		$('#simulate').removeAttr('disabled');
+		return;
+	}
+	var delay = 0;
+	var msg = 'Sending ';
+	for(var y = 0; y < 4; y++) {
+		for(var x = 0; x < 4; x++) {
+			delay += 300;
+			const lsX = x;
+			const lsY = y;
+			const lsID = '(' + lsX + ',' + lsY + ')';
+			if(acked.indexOf(lsID) != -1)
+				continue;
+			msg += lsID + ' ';
+			setTimeout(function(){
+				var packetobj = send_packet(1, function(){receivepacket_receiver(lsID);});
+				packetobj.css('background-image', 'url(sendpic.png)');
+				packetobj.css('background-position-x', (-lsX*32)+'px');
+				packetobj.css('background-position-y', (-lsY*32)+'px');
+			}, delay);
+		}
+	}
+	$('#sendlog').append(msg + '<br>');
+	setTimeout(send_image, 16000);
+}
+
+function receivepacket_receiver(id) {
+	assembledgrid[id].css('visibility', 'visible');
+	if (acklist == undefined) {
+		acklist = []
+		acklist.push(id);
+		setTimeout(function() {
+			const tmpacklist = acklist;
+			acklist = undefined;
+			$('#recvlog').append('Sending acks: ' + tmpacklist + '<br>');
+			var packetobj = send_packet(-1, function() {
+				$('#sendlog').append('Received acks: ' + tmpacklist + '<br>');
+				for(var i = 0; i < tmpacklist.length; i++) {
+					ackassembledgrid[tmpacklist[i]].css('visibility', 'visible');
+					if(acked.indexOf(tmpacklist[i]) == -1)
+						acked.push(tmpacklist[i]);
+				}
+			});
+			packetobj.css('background-image', 'url(ack.png)');
+		}, 1000);
+	} else {
+		acklist.push(id)
+	}
+}
+function simulate() {
+	reset();
+	$('#simulate').attr('disabled', 'true');
+	send_image();
+}
+</script>
+<style>
+#contentbox {
+	width: 800px;
+	height: 800px;
+	padding: 0px;
+	border: 1px solid black;
+	background-color: #332233;
+	color: #dddddd;
+	margin: auto;
+	position: relative;
+}
+.pdiv {
+	width: 800px;
+	margin: auto;
+}
+.router {
+	position: absolute;
+	margin-left: -32px;
+	margin-top: -32px;
+}
+.connection {
+	background-color: #888;
+	position: absolute;
+	width: 10px;
+	height: 200px;
+	margin-left: -5px;
+	margin-top: -100px;
+	display: inline-block;
+}
+.packet {
+	transition: left .5s, top .5s;
+	transition-timing-function: linear;
+	background-color: #fff;
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	margin-left: -16px;
+	margin-top: -16px;
+	display: inline-block;
+}
+.flex {
+	display: flex;
+}
+#recvpic {
+	width: 128px;
+	height: 128px;
+	position: relative;
+}
+#sendpic {
+	width: 128px;
+	height: 128px;
+	position: relative;
+}
+#sendpicimg {
+	position: absolute;
+}
+.recvpiece {
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	background-image: url(sendpic.png);
+	display: inline-block;
+}
+.sendpiece {
+	width: 32px;
+	height: 32px;
+	position: absolute;
+	background-image: url(ack.png);
+	display: inline-block;
+}
+</style>
+</head>
+<body onload='onload()'>
+
+<div class='pdiv'>
+	The grey flashing boxes are routers, and the grey lines are connections between them.
+	The things traveling between them are IP packets. If there are no diagonal lines in the page, then you should consider upgrading to a browser that does not suck. Examples of browsers that do not suck are: Definitely not internet explorer.
+	This simulation simulates an image being sent over TCP/IP<br><br>
+	Click the "Simulate!" button to begin the simulation. The simulation ends when the sender receives acks for all 16 parts.
+	<br><br><br><br>
+</div>
+
+<div class='flex'>
+	<div style='width:256px'>
+		Packet drop chance: <br><input type='range' min='0' max='.1' step='.001' value='.02' id='dropchanceslider' onclick='$("#dropchanceval").html($("#dropchanceslider").val());dropchance=$("#dropchanceslider").val()'><span id='dropchanceval'>0.02</span><br>
+		<input type='button' value='Simulate!' id = 'simulate' onclick='simulate()'><br>
+		<div id='sendpic'>
+			<img src="sendpic.png" id='sendpicimg'></img>
+		</div>
+		<div id='sendlog'></div>
+	</div>
+	<div id='contentbox'>
+		<span id='connections'></span>
+		<span id='packets'></span>
+		<span id='routers'></span>
+	</div>
+	<div style='width:256px'>
+		<div id='recvpic'></div>
+		<div id='recvlog'></div>
+	</div>
+</div>
+
+<div class='pdiv'>
+<br><br><br>
+	<img src='url2ip.png'>
+</div>
+
+</body>
+</html>
