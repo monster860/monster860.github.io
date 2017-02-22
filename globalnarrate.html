@@ -1,0 +1,80 @@
+<html>
+<head>
+<script src='https://code.jquery.com/jquery-1.10.2.js'></script>
+<style>
+.adminhelp				{color: #aa0000;	font-weight: bold;}
+</style>
+<script>
+var mode = 0;
+function setban() {
+	mode = 0;
+	$('#banoptions').css({display:'block'});
+	update();
+}
+function setbwoink() {
+	mode = 1;
+	$('#banoptions').css({display:'none'});
+	update();
+}
+function update() {
+	var output = "";
+	if(mode) {
+		// bwoink
+		
+		output = "<span class='adminhelp'>PM from-"+$('#rank').val()+"<b><a href='?'>"+$('#admin').val()+"</a></b>: "+escapeHtml($('#message').val())+"</span>";
+	} else {
+		output = "<font color='red'><BIG><B>You have been banned by "+$('#admin').val()+"."+
+		"<br>Reason: "+escapeHtml($('#message').val())+"</B></BIG><br>"
+		var banlen = parseInt($('#banlength').val());
+		if(banlen) {
+			output += "This is a temporary ban, it will be removed in "+banlen+" minutes.<br>";
+		} else {
+			output += "This is a permanent ban.<br>"
+		}
+		var forumlink = $('#forumlink').val();
+		if(forumlink) {
+			output += "To try to resolve this matter head to <a href='"+forumlink+"'>"+forumlink+"</a><br>"
+		} else {
+			output += "No ban appeals URL has been set.<br>"
+		}
+		output += "</font><pre class='system system'>Connection died.</pre><pre class='system system'><br>"
+	}
+	$('#output').text(output);
+	$('#preview').html(output);
+}
+function escapeHtml(string) {
+	$('#escape').text(string);
+	return $('#escape').html().replaceAll('\n','<br>');
+}
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.replace(new RegExp(search, 'g'), replacement);
+};
+</script>
+</head>
+<body onload='update()'>
+<span style='text-align:center'><h1>Global Narrate Generator</h1></span><hr>
+<div style='width:800px; margin: auto'>
+<input type='radio' id='isban' onclick='setban()' name='type' checked>Ban<br>
+<input type='radio' id='isbwoink' onclick='setbwoink()' name='type'>Bwoink<br>
+Message: <br>
+<textarea id='message' style='width:260px;height:150px' onchange='update()'></textarea><br>
+Admin name: <br>
+<input type='text' id='admin' style='width:260px' onchange='update()'><br>
+Admin rank (only if your server uses rank in bwoinks): <br>
+<input type='text' id='rank' style='width:260px' onchange='update()'><br>
+<div id='banoptions'>
+Ban length (0 for permanent):<br>
+<input type='number' id='banlength' style='width:260px' value='0' min='0' step='1' onchange='update()'><br>
+Forum link:<br>
+<input type='text' id='forumlink' style='width:260px' value='' onchange='update()'>
+</div>
+<h3>OUTPUT:</h3>
+<textarea id='output' style='width:100%;height:100px'></textarea>
+<h3>PREVIEW:</h3>
+<div id='preview' style='border: 1px solid black;font-family:Arial;font-size:13px'>
+</div>
+</div>
+<div id='escape' style='display:none'></div>
+</body>
+</html>
